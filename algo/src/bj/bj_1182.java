@@ -4,46 +4,40 @@ import java.io.*;
 
 public class bj_1182 {
     private static int n,s,cnt;
-    private static boolean[] visited;
     private static int[] arr;
-    private static List<Integer> num=new ArrayList<>();
     public static void main(String[] args) throws IOException{
         BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st=new StringTokenizer(br.readLine());
+
         n=Integer.parseInt(st.nextToken());
         s=Integer.parseInt(st.nextToken());
-
         arr=new int[n];
-
-        st=new StringTokenizer(br.readLine());
-        for (int i = 0; i <n ; i++) {
-            arr[i]=Integer.parseInt(st.nextToken());
-        }
         cnt=0;
 
-        //조합
-        dfs(0,0);
+        st=new StringTokenizer(br.readLine());
+        for (int i = 0; i < n; i++) {
+            arr[i]=Integer.parseInt(st.nextToken());
+        }
 
-        //목표가 0이면 공집합 무조건 포함하기 떄문
-        if(s==0) cnt--;
-
+        dfs(0,0,false);
         System.out.println(cnt);
 
     }
-    private static void dfs(int depth,int sum) {
-
+    //부분순열-> 각 원소 선택하냐 마냐 2^n
+    private static void dfs(int depth,int sum,boolean flag) {
+        // 선택여부 판단 완료
         if(depth==n){
-            if(sum==s){
+            //System.out.println(sum);  //아무것도 선택하지 않을 때 0되는데 공집합은 부분수열 아님
+            if(flag&&sum==s){
                 cnt++;
             }
             return;
         }
 
-        //원소를 포함하는 경우
-        dfs(depth+1,sum+arr[depth]);
-
-        //아닌 경우
-        dfs(depth+1,sum);
+        //선택함
+        dfs(depth+1,sum+arr[depth],true);
+        //선택안함
+        dfs(depth+1,sum,flag);
     }
 
 }
