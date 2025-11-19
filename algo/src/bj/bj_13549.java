@@ -13,13 +13,14 @@ public class bj_13549 {
             return this.cost-o.cost;
         }
     }
-    private static int n,m;
+    private static int n,k;
+    private static int MAX_VALUE=100_000;
     public static void main(String[] args) throws IOException {
         BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st= new StringTokenizer(br.readLine());
 
         n=Integer.parseInt(st.nextToken());
-        m=Integer.parseInt(st.nextToken());
+        k=Integer.parseInt(st.nextToken());
 
         int result = dij();
         System.out.println(result);
@@ -27,39 +28,51 @@ public class bj_13549 {
     }
     private static int dij(){
         PriorityQueue<Edge> pq=new PriorityQueue<>();
-        int[] dist=new int[100_000+1]; //최대 거리까지
+        int[] dist=new int[MAX_VALUE+1];
+
         Arrays.fill(dist,Integer.MAX_VALUE);
 
+        pq.add(new Edge(n,0)); //출발
         dist[n]=0;
-        pq.add(new Edge(n,0));
 
         while(!pq.isEmpty()){
             Edge curr=pq.poll();
 
-            if(dist[curr.loc]<curr.cost) continue;
+            int currCost=curr.cost;
+            int currLoc=curr.loc;
 
-            int nLoc=curr.loc-1;
-            if(nLoc>=0&&nLoc<100_000&&dist[nLoc]>curr.cost+1){
-                dist[nLoc]=curr.cost+1;
-                pq.add(new Edge(nLoc,dist[nLoc]));
+            if(dist[currLoc]<currCost) continue;
+
+//            System.out.println("현재 위치:"+currLoc+"현재소요시간:"+currCost);
+
+            int nextLoc=currLoc-1;
+            if(isRange(nextLoc)){
+                if(dist[nextLoc]>currCost+1){
+                    dist[nextLoc]=currCost+1;
+                    pq.add(new Edge(nextLoc,dist[nextLoc]));
+                }
             }
 
-            nLoc=curr.loc+1;
-            if(nLoc>=0&&nLoc<100_000&&dist[nLoc]>curr.cost+1){
-                dist[nLoc]=curr.cost+1;
-                pq.add(new Edge(nLoc,dist[nLoc]));
+            nextLoc= currLoc+1;
+            if(isRange(nextLoc)){
+                if(dist[nextLoc]>currCost+1){
+                    dist[nextLoc]=currCost+1;
+                    pq.add(new Edge(nextLoc,dist[nextLoc]));
+                }
             }
 
-            nLoc=curr.loc*2;
-            if(nLoc>=0&&nLoc<100_000&&dist[nLoc]>curr.cost){
-                dist[nLoc]=curr.cost;//시간 그대로
-                pq.add(new Edge(nLoc,dist[nLoc]));
+            nextLoc= currLoc*2;
+            if(isRange(nextLoc)){
+                if(dist[nextLoc]>currCost){
+                    dist[nextLoc]=currCost;
+                    pq.add(new Edge(nextLoc,dist[nextLoc]));
+
+                }
             }
-
-
         }
-        return dist[m];
-
-
+        return dist[k];
+    }
+    private static boolean isRange(int location){
+        return location>=0 && location<=MAX_VALUE;
     }
 }
